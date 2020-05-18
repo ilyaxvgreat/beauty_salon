@@ -1,0 +1,1 @@
+delete from salons where id=1;
