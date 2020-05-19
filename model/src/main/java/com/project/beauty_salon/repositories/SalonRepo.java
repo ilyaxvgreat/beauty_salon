@@ -2,6 +2,7 @@ package com.project.beauty_salon.repositories;
 
 import com.project.beauty_salon.domain.BeautySalon;
 import com.project.beauty_salon.domain.GenderType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -17,6 +18,7 @@ public class SalonRepo implements ISalonRepo {
             new BeanPropertyRowMapper<>(BeautySalon.class);
     private final JdbcTemplate jdbcTemplate;
 
+    @Autowired
     public SalonRepo(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -31,7 +33,8 @@ public class SalonRepo implements ISalonRepo {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps =
-                    connection.prepareStatement("insert into salons(salonname, address, hasgiftcertificate,gendertype,worktime,workersqnt) values (?, ?, ?,?,?,?)",
+                    connection.prepareStatement("insert into salons(salonname, address, hasgiftcertificate,gendertype,worktime,workersqnt) " +
+                                    "values (?, ?, ?,?,?,?)",
                             new String[]{"id"});
             ps.setString(1, salon.getSalonName());
             ps.setString(2, salon.getAddress());

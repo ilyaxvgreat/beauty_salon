@@ -4,15 +4,19 @@ public class BeautySalon {
     private String salonName;
     private String address;
     private Boolean hasGiftCertificate;
-    private GenderType genderType;
+    private String genderType;
     private String workTime;
     private Integer workersQnt;
 
     public BeautySalon() {
     }
 
-    public BeautySalon(final String salonName, final String address, final Boolean hasGiftCertificate, final
-    GenderType genderType, final String workTime, final Integer workersQnt) {
+    public BeautySalon(String salonName,
+                       String address,
+                       Boolean hasGiftCertificate,
+                       String genderType,
+                       String workTime,
+                       Integer workersQnt) {
         this.salonName = salonName;
         this.address = address;
         this.hasGiftCertificate = hasGiftCertificate;
@@ -53,11 +57,11 @@ public class BeautySalon {
         this.hasGiftCertificate = hasGiftCertificate;
     }
 
-    public GenderType getGenderType() {
+    public String getGenderType() {
         return genderType;
     }
 
-    public void setGenderType(GenderType genderType) {
+    public void setGenderType(String genderType) {
         this.genderType = genderType;
     }
 
