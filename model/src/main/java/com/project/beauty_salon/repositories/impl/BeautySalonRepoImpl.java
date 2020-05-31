@@ -1,7 +1,7 @@
-package com.project.beauty_salon.repositories;
+package com.project.beauty_salon.repositories.impl;
 
 import com.project.beauty_salon.domain.BeautySalon;
-import com.project.beauty_salon.domain.GenderType;
+import com.project.beauty_salon.repositories.IRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,15 +11,16 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public class SalonRepo implements ISalonRepo {
+public class BeautySalonRepoImpl implements IRepository<BeautySalon> {
     private static final BeanPropertyRowMapper<BeautySalon> ROW_MAPPER =
             new BeanPropertyRowMapper<>(BeautySalon.class);
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public SalonRepo(final JdbcTemplate jdbcTemplate) {
+    public BeautySalonRepoImpl(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -29,33 +30,33 @@ public class SalonRepo implements ISalonRepo {
     }
 
     @Override
-    public BeautySalon insert(final BeautySalon salon) {
+    public Optional< BeautySalon> create(final BeautySalon salon) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps =
                     connection.prepareStatement("insert into salons(salonname, address, hasgiftcertificate,gendertype,worktime,workersqnt) " +
-                                    "values (?, ?, ?,?,?,?)",
+                                    "values (?,?,?,?,?,?)",
                             new String[]{"id"});
             ps.setString(1, salon.getSalonName());
             ps.setString(2, salon.getAddress());
             ps.setBoolean(3, salon.getHasGiftCertificate());
-            ps.setObject(4, GenderType.class);
+            ps.setObject(4, salon.getGenderType());
             ps.setString(5, salon.getWorkTime());
             ps.setInt(6, salon.getWorkersQnt());
             return ps;
         }, keyHolder);
         long salonId = keyHolder.getKey().longValue();
         return getById(salonId);
-
     }
 
     @Override
-    public BeautySalon getById(final Long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM salons WHERE id = ?", ROW_MAPPER, id);
+    public Optional<BeautySalon> getById(final Long id) {
+
+        return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM salons WHERE id = ?", ROW_MAPPER, id));
     }
 
     @Override
-    public BeautySalon update(final Long id, final BeautySalon salon) {
+    public Optional<BeautySalon> update(final Long id, final BeautySalon salon) {
         jdbcTemplate.update("update salons set salonname = ?," +
                         " address = ?," +
                         " hasgiftcertificate = ?," +
@@ -69,7 +70,6 @@ public class SalonRepo implements ISalonRepo {
                 salon.getWorkTime(),
                 salon.getWorkersQnt(), id);
         return getById(id);
-
     }
 
     @Override
